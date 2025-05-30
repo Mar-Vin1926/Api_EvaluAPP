@@ -1,0 +1,46 @@
+# Archivos de configuración con credenciales
+application.properties
+application-*.properties
+!.env.example
+!.gitignore
+
+# Archivos de entorno
+.env
+*.env
+!.env.example
+
+# Archivos de claves
+*.pem
+*.key
+*.cert
+*.jks
+*.keystore
+*.truststore
+
+# Otras configuraciones sensibles
+**/config/**
+
+# Archivos de IDE
+.idea/
+*.iml
+*.iws
+*.ipr
+*.class
+.settings/
+.vscode/
+bin/
+*.log
+
+# Archivos de compilación
+target/
+.mvn/
+mvnw
+mvnw.cmd
+
+# Archivos de Docker
+Dockerfile
+docker-compose.yml
+
+# Archivos de sistema
+.DS_Store
+Thumbs.db

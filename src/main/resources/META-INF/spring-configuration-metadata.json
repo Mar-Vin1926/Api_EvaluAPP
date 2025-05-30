@@ -1,0 +1,36 @@
+{
+  "groups": [
+    {
+      "name": "app.jwt",
+      "type": "com.cesde.proyecto_integrador.config.JwtProperties",
+      "sourceType": "com.cesde.proyecto_integrador.config.JwtProperties"
+    }
+  ],
+  "properties": [
+    {
+      "name": "app.jwt.secret",
+      "type": "java.lang.String",
+      "description": "Clave secreta para firmar los tokens JWT.",
+      "sourceType": "com.cesde.proyecto_integrador.config.JwtProperties"
+    },
+    {
+      "name": "app.jwt.expiration",
+      "type": "java.lang.Long",
+      "description": "Tiempo de expiración del token en milisegundos.",
+      "sourceType": "com.cesde.proyecto_integrador.config.JwtProperties"
+    },
+    {
+      "name": "app.jwt.token-prefix",
+      "type": "java.lang.String",
+      "description": "Prefijo para el token en el encabezado de autorización (ej. 'Bearer ').",
+      "sourceType": "com.cesde.proyecto_integrador.config.JwtProperties"
+    },
+    {
+      "name": "app.jwt.header",
+      "type": "java.lang.String",
+      "description": "Nombre del encabezado HTTP que contendrá el token.",
+      "sourceType": "com.cesde.proyecto_integrador.config.JwtProperties"
+    }
+  ],
+  "hints": []
+}
