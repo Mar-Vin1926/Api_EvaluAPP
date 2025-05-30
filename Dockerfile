@@ -6,11 +6,11 @@ FROM maven:3.8.6-openjdk-8 AS builder
 # Directorio de trabajo
 WORKDIR /app
 
-# Copiar el pom.xml primero para cachear dependencias
+# Copiar el pom.xml
 COPY pom.xml .
 
 # Descargar dependencias
-RUN mvn -B dependency:go-offline
+RUN mvn -B dependency:resolve
 
 # Copiar el código fuente
 COPY src ./src
