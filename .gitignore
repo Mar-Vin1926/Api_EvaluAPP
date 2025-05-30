@@ -33,14 +33,7 @@ bin/
 
 # Archivos de compilación
 target/
-.mvn/
-mvnw
-mvnw.cmd
 
-# Archivos de Docker
-Dockerfile
-docker-compose.yml
-
-# Archivos de sistema
+# Archivos del sistema
 .DS_Store
 Thumbs.db
