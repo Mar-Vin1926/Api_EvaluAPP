@@ -1,0 +1,11 @@
+[build]
+builder = "dockerfile"
+
+[deploy]
+startCommand = "java -jar /app/app.jar"
+healthcheckPath = "/actuator/health"
+healthcheckTimeout = 100
+
+[variables]
+JAVA_TOOL_OPTIONS = "-Xmx1024m -Xms256m"
+JAVA_OPTS = "-Djava.security.egd=file:/dev/./urandom"

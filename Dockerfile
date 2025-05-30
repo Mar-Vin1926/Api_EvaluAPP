@@ -6,7 +6,7 @@ FROM maven:3.8.6-openjdk-8 AS builder
 # Directorio de trabajo
 WORKDIR /app
 
-# Copiar solo el pom.xml primero para cachear dependencias
+# Copiar el pom.xml primero para cachear dependencias
 COPY pom.xml .
 
 # Descargar dependencias
@@ -37,4 +37,4 @@ COPY --from=builder /app/target/*.jar app.jar
 EXPOSE 8080
 
 # Comando de inicio
-ENTRYPOINT ["sh", "-c", "java $JAVA_OPTS -jar /app/app.jar"]
+CMD ["sh", "-c", "java $JAVA_OPTS -jar app.jar"]
