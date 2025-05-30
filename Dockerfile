@@ -3,24 +3,32 @@
 # ================================================
 FROM maven:3.8.6-openjdk-8 AS builder
 
-# Mostrar versiones
-RUN mvn --version && java -version
+# Configurar Maven para mejor rendimiento
+ENV MAVEN_OPTS="-Dmaven.repo.local=/root/.m2/repository -Dmaven.wagon.http.retryHandler.count=3 -Dmaven.wagon.http.retryHandler.interval=1000 -Dmaven.wagon.http.retryHandler.requestSentEnabled=true -Dmaven.wagon.rto=10000 -Dmaven.wagon.http.retryHandler.requestSentEnabled=true -Dmaven.wagon.http.retryHandler.requestSentEnabled=true"
 
 # Directorio de trabajo
 WORKDIR /app
 
-# Copiar el pom.xml primero para cachear dependencias
+# Copiar solo el pom.xml primero para cachear dependencias
 COPY pom.xml .
 
-
-# Descargar dependencias con más logs
-RUN mvn -B dependency:resolve
+# Descargar dependencias
+RUN mvn -B dependency:go-offline || \
+    (rm -rf ~/.m2/repository && mvn -B dependency:go-offline)
 
 # Copiar el código fuente
 COPY src ./src
 
-# Construir la aplicación con logs detallados
-RUN mvn -B clean package -DskipTests -e -X
+# Construir la aplicación
+RUN mvn -B clean package -DskipTests \
+    -Dmaven.test.skip=true \
+    -Dmaven.javadoc.skip=true \
+    -Dmaven.source.skip=true \
+    -Dmaven.install.skip=true \
+    -Dmaven.site.skip=true \
+    -Dmaven.clean.skip=true \
+    -Dmaven.deploy.skip=true \
+    -Dmaven.dependency.skip=true
 
 # ================================================
 # Etapa de producción
