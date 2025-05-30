@@ -3,20 +3,24 @@
 # ================================================
 FROM maven:3.8.6-openjdk-8 AS builder
 
+# Mostrar versiones
+RUN mvn --version && java -version
+
 # Directorio de trabajo
 WORKDIR /app
 
 # Copiar el pom.xml primero para cachear dependencias
 COPY pom.xml .
 
+
 # Descargar dependencias con más logs
-RUN mvn -B dependency:go-offline
+RUN mvn -B dependency:resolve
 
 # Copiar el código fuente
 COPY src ./src
 
-# Construir la aplicación
-RUN mvn -B clean package -DskipTests
+# Construir la aplicación con logs detallados
+RUN mvn -B clean package -DskipTests -e -X
 
 # ================================================
 # Etapa de producción
