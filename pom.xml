@@ -9,6 +9,18 @@
         <relativePath/>
     </parent>
     
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>com.fasterxml.jackson</groupId>
+                <artifactId>jackson-bom</artifactId>
+                <version>${jackson.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+    
     <groupId>com.cesde</groupId>
     <artifactId>proyecto-integrador</artifactId>
     <version>0.0.1-SNAPSHOT</version>
@@ -54,14 +66,14 @@
         <maven.compiler.fork>true</maven.compiler.fork>
         <maven.compiler.optimize>true</maven.compiler.optimize>
         <jjwt.version>0.11.5</jjwt.version>
-        <springdoc.version>1.6.15</springdoc.version>
+        <springdoc.version>1.7.0</springdoc.version>
         <lombok.version>1.18.30</lombok.version>
         <javax.servlet-api.version>4.0.1</javax.servlet-api.version>
         <javax.persistence-api.version>2.2</javax.persistence-api.version>
         <javax.validation-api.version>2.0.1.Final</javax.validation-api.version>
         <mysql-connector.version>8.0.33</mysql-connector.version>
         <jaxb-runtime.version>2.3.3</jaxb-runtime.version>
-        <jackson.version>2.13.4.2</jackson.version>
+        <jackson.version>2.15.2</jackson.version>
         <maven-dependency-plugin.version>3.6.0</maven-dependency-plugin.version>
     </properties>
 
