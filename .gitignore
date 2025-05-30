@@ -1,8 +1,9 @@
 # Archivos de configuración con credenciales
-application.properties
-application-*.properties
 !.env.example
 !.gitignore
+# Permitir archivos de configuración de la aplicación
+!src/main/resources/application*.properties
+!src/main/resources/application*.yml
 
 # Archivos de entorno
 .env
