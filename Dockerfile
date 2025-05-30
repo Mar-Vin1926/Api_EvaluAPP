@@ -3,35 +3,36 @@
 # ================================================
 FROM maven:3.8.6-openjdk-8 AS builder
 
-# Mostrar información de depuración
-RUN mvn --version && \
-    java -version && \
-    echo "M2_HOME: $M2_HOME" && \
-    echo "MAVEN_HOME: $MAVEN_HOME" && \
-    echo "PATH: $PATH"
+# Configuración básica
+ENV MAVEN_OPTS="-Dmaven.repo.local=/root/.m2/repository -Xmx1024m -XX:MaxPermSize=512m -Duser.home=/root -Dmaven.wagon.http.retryHandler.count=3"
 
-# Configurar Maven para mejor rendimiento
-ENV MAVEN_OPTS="-Dmaven.repo.local=/root/.m2/repository -Xmx1024m -XX:MaxPermSize=512m"
-
-# Crear directorio de trabajo
+# Directorio de trabajo
 WORKDIR /app
 
-# Copiar solo el pom.xml primero
+# 1. Copiar solo el pom.xml
 COPY pom.xml .
 
-# Descargar dependencias con reintentos
-RUN mvn -B dependency:go-offline || \
-    (echo "Primer intento fallido, reintentando..." && \
-     mvn -B dependency:go-offline) || \
-    (echo "Segundo intento fallido, limpiando y reintentando..." && \
-     rm -rf ~/.m2/repository && \
-     mvn -B dependency:go-offline)
+# 2. Descargar dependencias con reintentos y manejo de errores
+RUN \
+    echo "=== Descargando dependencias (intento 1) ===" && \
+    mvn -B dependency:go-offline || ( \
+        echo "=== Falló el primer intento, limpiando caché... ===" && \
+        rm -rf /root/.m2/repository && \
+        echo "=== Reintentando descarga de dependencias... ===" && \
+        mvn -B dependency:go-offline \
+    )
 
-# Copiar el código fuente
+# 3. Copiar el código fuente
 COPY src ./src
 
-# Construir la aplicación con logs detallados
-RUN mvn -B clean compile dependency:tree && \
+# 4. Compilar el código con información de depuración
+RUN echo "=== Compilando el código... ===" && \
+    mvn -B clean compile && \
+    echo "=== Mostrando árbol de dependencias... ===" && \
+    mvn -B dependency:tree
+
+# 5. Empaquetar la aplicación
+RUN echo "=== Empaquetando la aplicación... ===" && \
     mvn -B package -DskipTests
 
 # ================================================
