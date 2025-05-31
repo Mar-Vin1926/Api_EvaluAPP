@@ -19,7 +19,8 @@
 *.truststore
 
 # Otras configuraciones sensibles
-**/config/**
+# Permitir archivos Java en config/
+src/main/java/**/config/*.java
 
 # Archivos de IDE
 .idea/

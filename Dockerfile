@@ -4,7 +4,7 @@
 FROM maven:3.8.6-openjdk-8 AS builder
 
 # Configuración básica
-ENV MAVEN_OPTS="-Dmaven.repo.local=/root/.m2/repository -Xmx1024m -XX:MaxPermSize=512m -Duser.home=/root"
+ENV MAVEN_OPTS="-Dmaven.repo.local=/root/.m2/repository -Xmx1024m -XX:MaxPermSize=512m -Duser.home=/root -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn"
 
 # Directorio de trabajo
 WORKDIR /app
@@ -13,16 +13,22 @@ WORKDIR /app
 COPY pom.xml .
 COPY src/main/resources/application-docker.properties src/main/resources/application.properties
 
-# 2. Descargar dependencias
-RUN mvn -B dependency:resolve
+# 2. Mostrar información del entorno
+RUN echo "=== Versión de Java ===" && \
+    java -version && \
+    echo "=== Versión de Maven ===" && \
+    mvn -version
 
-# 3. Copiar el código fuente
+# 3. Descargar dependencias con información detallada
+RUN mvn -B dependency:resolve -e -X
+
+# 4. Copiar el código fuente
 COPY src ./src
 
-# 4. Compilar el código
-RUN mvn -B clean compile
+# 5. Compilar el código con información detallada
+RUN mvn -B clean compile -e -X
 
-# 5. Empaquetar la aplicación
+# 6. Empaquetar la aplicación
 RUN mvn -B package -DskipTests
 
 # ================================================
@@ -33,11 +39,6 @@ FROM openjdk:8-jre-slim
 # Variables de entorno
 ENV SPRING_PROFILES_ACTIVE=docker
 ENV JAVA_OPTS="-Xms256m -Xmx512m -Djava.security.egd=file:/dev/./urandom"
-
-# Instalar curl para health checks
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    curl \
-    && rm -rf /var/lib/apt/lists/*
 
 # Directorio de trabajo
 WORKDIR /app
