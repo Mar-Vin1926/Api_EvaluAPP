@@ -4,48 +4,26 @@
 FROM maven:3.8.6-openjdk-8 AS builder
 
 # Configuración básica
-ENV MAVEN_OPTS="-Dmaven.repo.local=/root/.m2/repository -Xmx1024m -XX:MaxPermSize=512m -Duser.home=/root -Dmaven.wagon.http.retryHandler.count=3"
-ENV MAVEN_OPTS="$MAVEN_OPTS -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn"
+ENV MAVEN_OPTS="-Dmaven.repo.local=/root/.m2/repository -Xmx1024m -XX:MaxPermSize=512m -Duser.home=/root"
 
 # Directorio de trabajo
 WORKDIR /app
 
-# 1. Copiar solo el pom.xml
+# 1. Copiar archivos de configuración
 COPY pom.xml .
+COPY src/main/resources/application-docker.properties src/main/resources/application.properties
 
-# 2. Mostrar información del entorno
-RUN echo "=== Versión de Java ===" && \
-    java -version && \
-    echo "=== Versión de Maven ===" && \
-    mvn -version && \
-    echo "=== Variables de entorno ===" && \
-    env | sort
+# 2. Descargar dependencias
+RUN mvn -B dependency:resolve
 
-# 3. Descargar dependencias con reintentos y manejo de errores
-RUN set -e; \
-    echo "=== Descargando dependencias (intento 1) ===" && \
-    mvn -B dependency:go-offline || ( \
-        echo "=== Falló el primer intento, limpiando caché... ===" && \
-        rm -rf /root/.m2/repository && \
-        echo "=== Reintentando descarga de dependencias... ===" && \
-        mvn -B dependency:go-offline || ( \
-            echo "=== Falló el segundo intento, intentando con resolución simple... ===" && \
-            mvn -B dependency:resolve \
-        ) \
-    )
-
-# 4. Copiar el código fuente
+# 3. Copiar el código fuente
 COPY src ./src
 
-# 5. Compilar el código con información detallada
-RUN echo "=== Compilando el código... ===" && \
-    mvn -B clean compile -e -X && \
-    echo "=== Mostrando árbol de dependencias... ===" && \
-    mvn -B dependency:tree
+# 4. Compilar el código
+RUN mvn -B clean compile
 
-# 6. Empaquetar la aplicación
-RUN echo "=== Empaquetando la aplicación... ===" && \
-    mvn -B package -DskipTests
+# 5. Empaquetar la aplicación
+RUN mvn -B package -DskipTests
 
 # ================================================
 # Etapa de producción
@@ -53,10 +31,10 @@ RUN echo "=== Empaquetando la aplicación... ===" && \
 FROM openjdk:8-jre-slim
 
 # Variables de entorno
-ENV SPRING_PROFILES_ACTIVE=prod
+ENV SPRING_PROFILES_ACTIVE=docker
 ENV JAVA_OPTS="-Xms256m -Xmx512m -Djava.security.egd=file:/dev/./urandom"
 
-# Instalar herramientas de diagnóstico
+# Instalar curl para health checks
 RUN apt-get update && apt-get install -y --no-install-recommends \
     curl \
     && rm -rf /var/lib/apt/lists/*
