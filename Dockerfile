@@ -22,7 +22,7 @@ RUN echo "=== Versión de Java ===" && \
     env | sort
 
 # 3. Descargar dependencias con reintentos y manejo de errores
-RUN \
+RUN set -e; \
     echo "=== Descargando dependencias (intento 1) ===" && \
     mvn -B dependency:go-offline || ( \
         echo "=== Falló el primer intento, limpiando caché... ===" && \
@@ -31,7 +31,7 @@ RUN \
         mvn -B dependency:go-offline || ( \
             echo "=== Falló el segundo intento, intentando con resolución simple... ===" && \
             mvn -B dependency:resolve \
-        )
+        ) \
     )
 
 # 4. Copiar el código fuente
