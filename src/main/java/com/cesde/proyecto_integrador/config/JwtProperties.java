@@ -1,4 +1,4 @@
-﻿package com.cesde.proyecto_integrador.config;
+package com.cesde.proyecto_integrador.config;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
@@ -16,6 +16,7 @@ public class JwtProperties {
     public void setSecret(String secret) {
         this.secret = secret;
     }
+
 
     public long getExpirationMs() {
         return expirationMs;
