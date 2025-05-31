@@ -26,8 +26,8 @@ COPY src ./src
 # 4. Copiar propiedades de la aplicación
 COPY src/main/resources/application-docker.properties src/main/resources/application.properties
 
-# 5. Compilar el proyecto
-RUN mvn -B clean package -DskipTests
+# 5. Compilar el proyecto con información detallada
+RUN mvn -B clean package -DskipTests -e -X
 
 # ================================================
 # Etapa de producción

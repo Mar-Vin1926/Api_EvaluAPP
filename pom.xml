@@ -65,6 +65,7 @@
         <maven.compiler.parameters>true</maven.compiler.parameters>
         <maven.compiler.fork>true</maven.compiler.fork>
         <maven.compiler.optimize>true</maven.compiler.optimize>
+        <maven.compiler.forceJavacCompilerUse>true</maven.compiler.forceJavacCompilerUse>
         
         <!-- Versiones de dependencias -->
         <jjwt.version>0.11.5</jjwt.version>
@@ -109,6 +110,20 @@
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
             <scope>runtime</scope>
+        </dependency>
+        
+        <!-- Hibernate -->
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-core</artifactId>
+            <version>5.6.15.Final</version>
+        </dependency>
+        
+        <!-- JPA API -->
+        <dependency>
+            <groupId>javax.persistence</groupId>
+            <artifactId>javax.persistence-api</artifactId>
+            <version>2.2</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
